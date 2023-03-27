@@ -30,11 +30,9 @@ private slots:
     void        DataSend();                            // 发送数据
     void        on_OpenSerialButton_clicked();         // 串口开关
     void        on_SendButton_clicked();               // 控件中添加 #
-    void        on_ClearButton_clicked();              // 清空控件中的所有 #
     void        on_ClearShowButton_clicked();          // 清空接收到的数据
     void        LED(bool changeColor);                 // 开关显示灯
     // 点击发送，接收数据
-    void        on_SendEditBtn1_clicked();
     void        on_SendWordOrder_clicked();
 
 private:

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
-    <height>1038</height>
+    <width>726</width>
+    <height>851</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QComboBox" name="PortBox">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>150</y>
+      <x>130</x>
+      <y>30</y>
       <width>281</width>
       <height>41</height>
      </rect>
@@ -27,8 +27,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>150</y>
+      <x>30</x>
+      <y>30</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -45,8 +45,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>110</y>
+      <x>20</x>
+      <y>180</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -60,49 +60,21 @@
      <string>接收数据</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>530</y>
-      <width>131</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>13</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>发送数据</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="DataReceived">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>160</y>
-      <width>541</width>
+      <x>20</x>
+      <y>230</y>
+      <width>651</width>
       <height>301</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="DataSend">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>580</y>
-      <width>541</width>
-      <height>51</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="LED">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>580</y>
+      <x>20</x>
+      <y>90</y>
       <width>51</width>
       <height>51</height>
      </rect>
@@ -118,9 +90,9 @@ border-radius:12px;</string>
    <widget class="QPushButton" name="OpenSerialButton">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>583</y>
-      <width>181</width>
+      <x>130</x>
+      <y>90</y>
+      <width>281</width>
       <height>51</height>
      </rect>
     </property>
@@ -136,8 +108,8 @@ border-radius:12px;</string>
    <widget class="QPushButton" name="SendButton">
     <property name="geometry">
      <rect>
-      <x>1160</x>
-      <y>580</y>
+      <x>490</x>
+      <y>620</y>
       <width>181</width>
       <height>51</height>
      </rect>
@@ -154,8 +126,8 @@ border-radius:12px;</string>
    <widget class="QPushButton" name="SendWordOrder">
     <property name="geometry">
      <rect>
-      <x>1160</x>
-      <y>660</y>
+      <x>490</x>
+      <y>700</y>
       <width>181</width>
       <height>51</height>
      </rect>
@@ -169,21 +141,11 @@ border-radius:12px;</string>
      <string>发送控制命令</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="Edit1">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>660</y>
-      <width>541</width>
-      <height>51</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="FlowRate">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>740</y>
+      <x>190</x>
+      <y>560</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -201,8 +163,8 @@ border-radius:12px;</string>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>740</y>
+      <x>30</x>
+      <y>560</y>
       <width>81</width>
       <height>51</height>
      </rect>
@@ -219,8 +181,8 @@ border-radius:12px;</string>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>740</y>
+      <x>350</x>
+      <y>560</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -238,8 +200,8 @@ border-radius:12px;</string>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>810</y>
+      <x>350</x>
+      <y>630</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -257,8 +219,8 @@ border-radius:12px;</string>
    <widget class="QLineEdit" name="MaxPress">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>810</y>
+      <x>190</x>
+      <y>630</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -276,8 +238,8 @@ border-radius:12px;</string>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>810</y>
+      <x>30</x>
+      <y>630</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -294,8 +256,8 @@ border-radius:12px;</string>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>880</y>
+      <x>30</x>
+      <y>700</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -312,8 +274,8 @@ border-radius:12px;</string>
    <widget class="QLineEdit" name="MinPress">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>880</y>
+      <x>190</x>
+      <y>700</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -331,8 +293,8 @@ border-radius:12px;</string>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>880</y>
+      <x>350</x>
+      <y>700</y>
       <width>101</width>
       <height>51</height>
      </rect>
@@ -353,7 +315,7 @@ border-radius:12px;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1440</width>
+     <width>726</width>
      <height>29</height>
     </rect>
    </property>

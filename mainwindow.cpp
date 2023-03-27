@@ -81,9 +81,17 @@ void MainWindow::DataReceived()
 {
     char BUF[512] = {0};                                       // 存储转换类型后的数据
     QByteArray data = serial->readAll();                      // 读取数据
-
+    qDebug()<<"DataReceived:"<<data;
     if(!data.isEmpty())                                 // 接收到数据
     {
+        if(data == "\xFF\x11\r\x02\xF9")
+        {
+            qDebug()<<"Control command send successfuly";
+        }
+        else if(data.at(3) == 0x01)
+        {
+            qDebug()<<"Recieve correct data";
+        }
         QString str = ui->DataReceived->toPlainText();  // 返回纯文本
         str += tr(data);                                // 数据是一行一行传送的，要保存所有数据
         ui->DataReceived->clear();                      // 清空之前的数据
@@ -114,15 +122,30 @@ void MainWindow::DataProess(int Function)
     messageSend = 0;
     switch (Function) {
     case Search:{
-        unsigned char buf[] = {0xff, 0x11, 0x05, 0x01, 0xea};
-        for (unsigned int i=0;i < sizeof (buf);i++) {
+        uchar buf[] = {0xff, 0x11, 0x05, 0x01, 0xea};
+        for (uint i=0;i < sizeof (buf);i++) {
             messageSend.append(buf[i]);
         }
     }break;
     case Control:{
-        unsigned char buf[] = {0xff, 0x11, 0x0d, 0x02};
-        int FlowRate = ui->FlowRate->text().toInt() *10;
-        for (unsigned int i=0;i < sizeof (buf);i++) {
+        uchar buf[13] = {0xff, 0x11, 0x0d, 0x02};
+        uint FlowRate = ui->FlowRate->text().toInt() *10;
+        buf[4] = (FlowRate >> 8) & 0xff;
+        buf[5] = (FlowRate >> 0) & 0xff;
+        uint MaxPress = ui->MaxPress->text().toInt() *10;
+        buf[6] = (MaxPress >> 8) & 0xff;
+        buf[7] = (MaxPress >> 0) & 0xff;
+        uint MinPress = ui->MinPress->text().toInt() *10;
+        buf[8] = (MinPress >> 8) & 0xff;
+        buf[9] = (MinPress >> 0) & 0xff;
+        buf[10] = 0x01;
+        buf[11] = 0x00;
+        uchar CRC = 0;
+        for ( int i = 0 ; i < 12 ; i ++ ) {
+           CRC = CRC ^ buf[i];
+        }
+        buf[12] = CRC;
+        for (uint i=0;i < sizeof (buf);i++) {
             messageSend.append(buf[i]);
         }
     }break;
@@ -133,6 +156,7 @@ void MainWindow::DataProess(int Function)
 // 发送数据，write ()
 void MainWindow::DataSend()
 {
+    qDebug()<<"DataSend:"<<messageSend;
     serial->write(messageSend);
 }
 
@@ -174,7 +198,6 @@ void MainWindow::on_OpenSerialButton_clicked()
         LED(true);
         // 清空数据
         ui->DataReceived->clear();
-        ui->DataSend->clear();
     }
     else                                                        // 如果串口关闭了，先给他打开
     {
@@ -201,29 +224,16 @@ void MainWindow::on_OpenSerialButton_clicked()
 // 控件中添加 #
 void MainWindow::on_SendButton_clicked()
 {
-    on_ClearButton_clicked();
     DataProess(Search);
 }
-// 清空控件
-void MainWindow::on_ClearButton_clicked()
-{
-    ui->DataSend->setText("");
-}
+
 // 清空接收到的数据
 void MainWindow::on_ClearShowButton_clicked()
 {
     ui->DataReceived->setText("");
 }
-// 点击发送后，获取串口信息并展示在接受控件中
-void MainWindow::on_SendEditBtn1_clicked()
-{
-    on_ClearButton_clicked();
-    QString EditText = ui->Edit1->text();               //获取发送框内容
-    ui->DataSend->setText(EditText);                     //将文本内容放在发送栏中
-}
 
 void MainWindow::on_SendWordOrder_clicked()
 {
-    on_ClearButton_clicked();
     DataProess(Control);
 }
