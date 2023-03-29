@@ -33,7 +33,8 @@ private slots:
     void        on_ClearShowButton_clicked();          // 清空接收到的数据
     void        LED(bool changeColor);                 // 开关显示灯
     // 点击发送，接收数据
-    void        on_SendWordOrder_clicked();
+    void        on_SendRunOrder_clicked();
+    void        on_SendStopOrder_clicked();
 
 private:
     Ui::MainWindow *ui;

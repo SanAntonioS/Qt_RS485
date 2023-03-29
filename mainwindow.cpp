@@ -47,7 +47,8 @@ void MainWindow::SerialPortInit()
 
     // 信号
     connect(serial,&QSerialPort::readyRead,this,&MainWindow::DataReceived);      // 接收数据
-    connect(ui->SendWordOrder,&QPushButton::clicked,this,&MainWindow::DataSend); // 发送数据
+    connect(ui->SendRunOrder,&QPushButton::clicked,this,&MainWindow::DataSend); // 发送数据
+    connect(ui->SendStopOrder,&QPushButton::clicked,this,&MainWindow::DataSend);
     connect(ui->SendButton,&QPushButton::clicked,this,&MainWindow::DataSend);    // 发送数据
 //connect(ui->SendEditBtn1,&QPushButton::clicked,this,&MainWindow::DataSend);  // 发送数据
 //connect(ui->SendEditBtn2,&QPushButton::clicked,this,&MainWindow::DataSend);  // 发送数据
@@ -79,41 +80,14 @@ void MainWindow::RefreshSerialPort(int index)
 // 接收数据,使用read () / readLine () / readAll ()
 void MainWindow::DataReceived()
 {
-    char BUF[512] = {0};                                       // 存储转换类型后的数据
+    QByteArray BUF[] = {0};                                       // 存储转换类型后的数据
     QByteArray data = serial->readAll();                      // 读取数据
     qDebug()<<"DataReceived:"<<data;
-    if(!data.isEmpty())                                 // 接收到数据
-    {
-        if(data == "\xFF\x11\r\x02\xF9")
-        {
-            qDebug()<<"Control command send successfuly";
-        }
-        else if(data.at(3) == 0x01)
-        {
-            qDebug()<<"Recieve correct data";
-        }
-        QString str = ui->DataReceived->toPlainText();  // 返回纯文本
-        str += tr(data);                                // 数据是一行一行传送的，要保存所有数据
-        ui->DataReceived->clear();                      // 清空之前的数据
-        ui->DataReceived->append(str);                  // 将数据放入控件中
-        qDebug() << "str info: " << ui->DataReceived->toPlainText();
-
-         // 清除之前的数据，防止追加，因为每次获取的数据不一样
-        int index = str.indexOf("\r\n");                // 找到，返回索引值，找不到，返回-1
-        if(index != -1)
-        {
-            snprintf(BUF,500,"%s", str.left(index + 2).toUtf8().data()); // QString转为char * 类型
-            qDebug() << "BUF info: " << BUF;
-            str.remove(0,index + 2);
-
-            // 处理获取到的数据，将其放入对应的控件中
-            // ....
-        }
-    }
 }
 
 #define Search 1
 #define Control 2
+#define Stop 3
 
 QByteArray messageSend;
 
@@ -139,6 +113,28 @@ void MainWindow::DataProess(int Function)
         buf[8] = (MinPress >> 8) & 0xff;
         buf[9] = (MinPress >> 0) & 0xff;
         buf[10] = 0x01;
+        buf[11] = 0x00;
+        uchar CRC = 0;
+        for ( int i = 0 ; i < 12 ; i ++ ) {
+           CRC = CRC ^ buf[i];
+        }
+        buf[12] = CRC;
+        for (uint i=0;i < sizeof (buf);i++) {
+            messageSend.append(buf[i]);
+        }
+    }break;
+    case Stop:{
+        uchar buf[13] = {0xff, 0x11, 0x0d, 0x02};
+        uint FlowRate = ui->FlowRate->text().toInt() *10;
+        buf[4] = (FlowRate >> 8) & 0xff;
+        buf[5] = (FlowRate >> 0) & 0xff;
+        uint MaxPress = ui->MaxPress->text().toInt() *10;
+        buf[6] = (MaxPress >> 8) & 0xff;
+        buf[7] = (MaxPress >> 0) & 0xff;
+        uint MinPress = ui->MinPress->text().toInt() *10;
+        buf[8] = (MinPress >> 8) & 0xff;
+        buf[9] = (MinPress >> 0) & 0xff;
+        buf[10] = 0x00;
         buf[11] = 0x00;
         uchar CRC = 0;
         for ( int i = 0 ; i < 12 ; i ++ ) {
@@ -190,7 +186,8 @@ void MainWindow::on_OpenSerialButton_clicked()
         // 关闭状态，按钮显示“打开串口”
         ui->OpenSerialButton->setText("打开串口");
         // 禁止操作“发送字符操作”
-        ui->SendWordOrder->setDisabled(true);
+        ui->SendRunOrder->setDisabled(true);
+        ui->SendStopOrder->setDisabled(true);
         ui->SendButton->setDisabled(true);
         // 关闭状态，颜色为绿色
         ui->OpenSerialButton->setStyleSheet("color: green;");
@@ -212,7 +209,8 @@ void MainWindow::on_OpenSerialButton_clicked()
         // 打开状态，按钮显示“关闭串口”
         ui->OpenSerialButton->setText("关闭串口");
         // 允许操作“发送字符操作”
-        ui->SendWordOrder->setDisabled(false);
+        ui->SendRunOrder->setDisabled(false);
+        ui->SendStopOrder->setDisabled(false);
         ui->SendButton->setDisabled(false);
         // 打开状态，颜色为红色
         ui->OpenSerialButton->setStyleSheet("color: red;");
@@ -233,7 +231,12 @@ void MainWindow::on_ClearShowButton_clicked()
     ui->DataReceived->setText("");
 }
 
-void MainWindow::on_SendWordOrder_clicked()
+void MainWindow::on_SendRunOrder_clicked()
 {
     DataProess(Control);
+}
+
+void MainWindow::on_SendStopOrder_clicked()
+{
+    DataProess(Stop);
 }
