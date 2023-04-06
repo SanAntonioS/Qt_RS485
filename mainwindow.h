@@ -21,6 +21,7 @@ public:
     void        SerialPortInit();                      // 串口初始化（参数配置）
     void        RefreshSerialPort(int index);
     void        DataProess(int Function);
+    uchar       CRC(uchar *buf, int len);
 
 public slots:
     // 串口槽函数

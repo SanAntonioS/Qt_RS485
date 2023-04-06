@@ -85,6 +85,15 @@ void MainWindow::DataReceived()
     qDebug()<<"DataReceived:"<<data;
 }
 
+uchar MainWindow::CRC(uchar buf[], int len)
+{
+    uchar CRC = 0;
+    for ( int i = 0 ; i < len ; i ++ ) {
+       CRC = CRC ^ buf[i];
+    }
+    return CRC;
+}
+
 #define Search 1
 #define Control 2
 #define Stop 3
@@ -114,11 +123,7 @@ void MainWindow::DataProess(int Function)
         buf[9] = (MinPress >> 0) & 0xff;
         buf[10] = 0x01;
         buf[11] = 0x00;
-        uchar CRC = 0;
-        for ( int i = 0 ; i < 12 ; i ++ ) {
-           CRC = CRC ^ buf[i];
-        }
-        buf[12] = CRC;
+        buf[12] = CRC(buf,sizeof (buf));
         for (uint i=0;i < sizeof (buf);i++) {
             messageSend.append(buf[i]);
         }
@@ -136,11 +141,7 @@ void MainWindow::DataProess(int Function)
         buf[9] = (MinPress >> 0) & 0xff;
         buf[10] = 0x00;
         buf[11] = 0x00;
-        uchar CRC = 0;
-        for ( int i = 0 ; i < 12 ; i ++ ) {
-           CRC = CRC ^ buf[i];
-        }
-        buf[12] = CRC;
+        buf[12] = CRC(buf,sizeof (buf));
         for (uint i=0;i < sizeof (buf);i++) {
             messageSend.append(buf[i]);
         }
