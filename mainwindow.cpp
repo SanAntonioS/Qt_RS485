@@ -1,8 +1,19 @@
+/**
+*@file mainwindow.cpp
+*@brief P500+ 恒流泵控制台函数
+*包括串口初始化、刷新串口、数据处理函数
+*包括数据接收、数据发送、按钮等槽函数
+*@author 余明明
+*@version 0.9.2
+*@date 2023.04.07
+*/
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
 
+/// @brief Mainwindow主函数
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -12,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     SerialPortInit();
 }
 
-// 串口初始化（参数配置）
+/// @brief 串口初始化（参数配置）
 void MainWindow::SerialPortInit()
 {
     serial = new QSerialPort;                       //申请内存,并设置父对象
@@ -55,7 +66,8 @@ void MainWindow::SerialPortInit()
 //connect(ui->SendEditBtn3,&QPushButton::clicked,this,&MainWindow::DataSend);  // 发送数据
 }
 
-// 刷新串口
+/// @brief 刷新串口
+/// @param[in] index 是否已经存在串口
 void MainWindow::RefreshSerialPort(int index)
 {
     QStringList portNameList;                                        // 存储所有串口名
@@ -77,7 +89,7 @@ void MainWindow::RefreshSerialPort(int index)
    }
 }
 
-// 接收数据,使用read () / readLine () / readAll ()
+/// @brief  接收数据,使用read () / readLine () / readAll ()
 void MainWindow::DataReceived()
 {
     QByteArray BUF[] = {0};                                       // 存储转换类型后的数据
@@ -85,6 +97,10 @@ void MainWindow::DataReceived()
     qDebug()<<"DataReceived:"<<data;
 }
 
+/// @brief 异或校验
+/// @param[in]  buf[]   参与异或校验的全部buf
+/// @param[in]  len     buf[]的长度
+/// @return     CRC     异或校验值
 uchar MainWindow::CRC(uchar buf[], int len)
 {
     uchar CRC = 0;
@@ -100,6 +116,9 @@ uchar MainWindow::CRC(uchar buf[], int len)
 
 QByteArray messageSend;
 
+/// @brief 按照用户点击的按钮来处理即将发送到P500+的数据包
+/// @param[in]  Function    用户选择的功能
+/// @param[out] messageSend 要发送给P500+的数据包
 void MainWindow::DataProess(int Function)
 {
     messageSend = 0;
@@ -150,14 +169,14 @@ void MainWindow::DataProess(int Function)
     }
 }
 
-// 发送数据，write ()
+/// @brief 发送数据，write ()
 void MainWindow::DataSend()
 {
     qDebug()<<"DataSend:"<<messageSend;
     serial->write(messageSend);
 }
 
-// 开关显示灯
+/// @brief 开关显示灯
 void  MainWindow::LED(bool changeColor)
 {
     if(changeColor == false)
@@ -177,7 +196,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// 串口开关
+/// @brief  串口开关
+/// @post   按钮按下，若选择了串口则打开串口并亮绿灯，若未选择则弹窗提示
 void MainWindow::on_OpenSerialButton_clicked()
 {
     if(serial->isOpen())                                        // 如果串口打开了，先给他关闭
@@ -220,7 +240,9 @@ void MainWindow::on_OpenSerialButton_clicked()
     }
 }
 
-// 控件中添加 #
+/// @brief  查询按钮，向P500+发送查询指令
+/// @post
+/// @todo   界面应实时刷新P500+的流速、压力等查询到的信息
 void MainWindow::on_SendButton_clicked()
 {
     DataProess(Search);
@@ -232,11 +254,15 @@ void MainWindow::on_ClearShowButton_clicked()
     ui->DataReceived->setText("");
 }
 
+/// @brief  运行按钮
+/// @post   P500+开始按照UI设置数值开始运行
 void MainWindow::on_SendRunOrder_clicked()
 {
     DataProess(Control);
 }
 
+/// @brief  停止按钮
+/// @post   P500+停止运行
 void MainWindow::on_SendStopOrder_clicked()
 {
     DataProess(Stop);
